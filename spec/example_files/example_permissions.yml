@@ -1,0 +1,4 @@
+guest_allowed_action: 0
+admin_allowed_action: 1
+member_allowed_action: 2
+admin_and_member_allowed_action: 3

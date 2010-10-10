@@ -1,0 +1,26 @@
+= RubikAcl
+
+Simple authorization library for Ruby on Rails in which permissions are defined in YAML files, using binary numeral system.
+Permissions are checked using the & operator. Each single bit represents a user group.
+0 is used to define non-restricted access
+
+== Example
+
+Groups:
+
+  class Group
+    GUEST = 0
+    ADMIN = 1
+    MODERATOR = 2
+    MEMBER = 4
+  end
+
+YAML file:
+
+  index: 0
+  show: 0
+  new: 5      # ADMIN + MEMBER
+  create: 5   # ADMIN + MEMBER
+  edit: 3     # ADMIN + MODERATOR
+  update: 3   # ADMIN + MODERATOR
+  destroy: 1  # ADMIN
