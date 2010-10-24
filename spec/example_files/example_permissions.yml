@@ -1,4 +1,5 @@
-guest_allowed_action: 0
-admin_allowed_action: 1
-member_allowed_action: 2
-admin_and_member_allowed_action: 3
+anyone_allowed_action: allow_all
+admin_allowed_action: [admin]
+member_allowed_action: [member]
+admin_and_member_allowed_action: [admin, member]
+no_one_allowed_action: deny_all
