@@ -2,17 +2,21 @@ require 'spec_helper'
 require 'rubik_acl'
 
 describe "Not configured RubikAcl" do
-  it "should raise RuntimeError when checking permission without given controller name" do
-    lambda {RubikAcl.permission?(:foo)}.should raise_exception(RuntimeError)
+  it "should raise UninitializedGroup when checking permission without given resource name" do
+    lambda {
+      RubikAcl.permission?(:foo)
+    }.should raise_exception(RubikAcl::UninitializedGroup)
   end
 
-  it "should raise RuntimeError when checking permission with given controller name" do
-    lambda {RubikAcl.permission?(:foo, :bar)}.should raise_exception(RuntimeError)
+  it "should raise UninitializedGroup when checking permission with given resource name" do
+    lambda {
+      RubikAcl.permission?(:foo, :bar)
+    }.should raise_exception(RubikAcl::UninitializedGroup)
   end
 
 end
 
-describe "Configured RubikAcl" do
+describe "Properly configured RubikAcl" do
   before(:each) do
     RubikAcl.setup do |config|
       config.files_with_permissions_path = File.expand_path('../example_files', __FILE__)
@@ -21,8 +25,16 @@ describe "Configured RubikAcl" do
     end
   end
 
-  it "should raise RuntimeError while initialization when not existing user group given" do
-    lambda {RubikAcl.init(:not_existion_group, :example_permissions)}.should raise_exception(RuntimeError)
+  describe "when not existing user group given" do
+    it "should raise NotExistingGroup while initialization" do
+      lambda {RubikAcl.init(:not_existion_group, :example_permissions)}.should raise_exception(RubikAcl::NotExistingGroup)
+    end
+  end
+
+  describe "when blank resource name given" do
+    it "should raise UninitializedResource while initialization" do
+      lambda {RubikAcl.init(:not_existion_group, nil)}.should raise_exception(RubikAcl::UninitializedResource)
+    end
   end
 
   describe "when guest executes action" do
@@ -30,13 +42,13 @@ describe "Configured RubikAcl" do
       RubikAcl.init(:guest, :example_permissions)
     end
 
-    describe "when controller parameter specified" do
+    describe "when resource name parameter specified" do
       it "should allow for access to anyone_allowed_action" do
-        RubikAcl.permission?(:anyone_allowed_action, :example_permissions).should be_true
+        RubikAcl.permission?(:anyone_allowed_action_2, :example_permissions_2).should be_true
       end
     end
 
-    describe "when controller parameter not specified" do
+    describe "when resource name parameter not specified" do
       it "should allow for access to anyone_allowed_action" do
         RubikAcl.permission?(:anyone_allowed_action).should be_true
       end

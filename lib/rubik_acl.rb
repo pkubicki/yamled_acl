@@ -1,9 +1,9 @@
+require 'rubik_acl/exceptions'
+
 module RubikAcl
 
   ALLOW_ALL = 'allow_all'
   DENY_ALL = 'deny_all'
-
-  GUEST_GROUP = 'guest'
 
   @@lock = Mutex.new
 
@@ -31,37 +31,33 @@ module RubikAcl
     yield(self)
   end
 
-  # Initializes ACL by giving logged user group_id and current controller name.
-  # Method call may be located in before_filter of application controller.
-  def self.init(rubik_acl_group, controller)
-    @@groups.include?(rubik_acl_group.to_s) or raise "Not existing group!!!"
-    Thread.current[:rubik_acl_group] = rubik_acl_group.to_s
-    Thread.current[:rubik_acl_controller_name] = controller.to_s
-    !Thread.current[:rubik_acl_controller_name].blank? or raise "Controller hasn't been initialized!!!"
-    load_action_permissions_for(Thread.current[:rubik_acl_controller_name])
+  # Initializes ACL by giving logged user group name and currently processed
+  # resource name.
+  def self.init(group_name, resource_name)
+    init_resource(resource_name)
+    init_group(group_name)
+    load_action_permissions_for(Thread.current[:rubik_acl_resource_name])
   end
 
-  # Method used for checking permissions. Optional controller name may be
-  # specified to check permission for other controller than curently processed.
-  def self.permission?(action, controller = nil)
-    Thread.current[:rubik_acl_group] or raise "User group hasn't been initialized!!!"
-    controller ||= Thread.current[:rubik_acl_controller_name]
-    if controller.nil?
-      @@actions_permissions or raise "Action permissions hasn't been initialized!!!"
-      check_permission_for(@@actions_permissions[controller][action.to_s])
+  # Method used for checking permissions. Optional resource name may be
+  # specified to check permission for other resource than curently processed.
+  def self.permission?(action, resource = nil)
+    Thread.current.key?(:rubik_acl_group) or raise(UninitializedGroup)
+    if resource.nil?
+      check_permission_for(@@actions_permissions[Thread.current[:rubik_acl_resource_name]][action.to_s])
     else
-      load_action_permissions_for(controller)
-      check_permission_for(@@actions_permissions[controller.to_s][action.to_s])
+      load_action_permissions_for(resource)
+      check_permission_for(@@actions_permissions[resource.to_s][action.to_s])
     end
   end
 
   private
 
-  def self.load_action_permissions_for(controller)
+  def self.load_action_permissions_for(resource)
     @@lock.synchronize do
-      if @@actions_permissions[controller.to_s].nil? || reload_permissions_on_each_request
-        File.open("#{files_with_permissions_path}/#{controller.to_s}.yml", File::RDONLY) do |file|
-          @@actions_permissions[controller.to_s] = YAML::load(file)
+      if @@actions_permissions[resource.to_s].nil? || reload_permissions_on_each_request
+        File.open("#{files_with_permissions_path}/#{resource.to_s}.yml", File::RDONLY) do |file|
+          @@actions_permissions[resource.to_s] = YAML::load(file)
         end
       end
     end
@@ -73,5 +69,16 @@ module RubikAcl
     return true if allowed == ALLOW_ALL
     allowed.include?(Thread.current[:rubik_acl_group])
   end
-  
+
+  def self.init_resource(resource_name)
+    !resource_name.blank? or raise(UninitializedResource)
+    Thread.current[:rubik_acl_resource_name] = resource_name.to_s
+  end
+
+  def self.init_group(group_name)
+    !group_name.blank? or raise(UninitializedGroup)
+    @@groups.include?(group_name.to_s) or raise(NotExistingGroup)
+    Thread.current[:rubik_acl_group] = group_name.to_s
+  end
+
 end

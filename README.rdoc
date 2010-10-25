@@ -1,3 +1,5 @@
 = RubikAcl
 
 Simple authorization library for Ruby on Rails in which permissions are defined in YAML files.
+
+It is still under development.

@@ -13,4 +13,9 @@ end
 require "rspec/core/rake_task"
 RSpec::Core::RakeTask.new(:spec)
 
+desc "Run specs with RCov"
+RSpec::Core::RakeTask.new(:rcov) do |t|
+  t.rcov = true
+end
+
 task :default => :spec
