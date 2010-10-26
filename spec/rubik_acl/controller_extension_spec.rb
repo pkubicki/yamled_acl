@@ -75,11 +75,11 @@ describe RubikAcl::ControllerExtension, "when controller initialized" do
   context "when there is no logged in user" do
     before(:each) do
       @controller.stub(:logged_in?).and_return(false)
-      RubikAcl.stub(:guest).and_return('guest')
+      RubikAcl.stub(:guest_group_name).and_return('guest')
     end
 
     it "current_user_group_name should return guest group name" do
-      @controller.send(:current_user_group_name).should == RubikAcl.guest
+      @controller.send(:current_user_group_name).should == RubikAcl.guest_group_name
     end
 
   end

@@ -49,7 +49,7 @@ module RubikAcl
     end
 
     def current_user_group_name
-      logged_in? ? current_user.group_name : RubikAcl.guest
+      logged_in? ? current_user.group_name : RubikAcl.guest_group_name
     end
 
   end
