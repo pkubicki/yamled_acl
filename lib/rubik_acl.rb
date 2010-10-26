@@ -12,13 +12,13 @@ module RubikAcl
   @@actions_permissions = {}
 
   mattr_accessor :files_with_permissions_path
-  @@files_with_permissions_path = '/config/acl'
+  @@files_with_permissions_path = 'config/acl'
 
   mattr_accessor :reload_permissions_on_each_request
   @@reload_permissions_on_each_request = false
   
   mattr_accessor :groups
-  @@groups = %w()
+  @@groups = []
 
   mattr_accessor :guest_group_name
   @@guest_group_name = 'guest'
@@ -26,9 +26,9 @@ module RubikAcl
   # Provides configuration options:
   #
   #   RubikAcl.setup do |config|
-  #     config.files_with_permissions_path = 'path/to/files'
+  #     config.files_with_permissions_path = 'other/than/default/path'
   #     config.reload_permissions_on_each_request = Rails.env.development?
-  #     config.groups = %w(visitor admin member)
+  #     config.groups = %w(admin member)
   #     config.guest_group_name = 'visitor'
   #   end
   #
