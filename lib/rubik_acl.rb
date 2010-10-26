@@ -1,4 +1,5 @@
 require 'rubik_acl/exceptions'
+require 'rubik_acl/controller_extension'
 
 module RubikAcl
 
@@ -19,12 +20,16 @@ module RubikAcl
   mattr_accessor :groups
   @@groups = []
 
-  # This method provides configuration options:
+  mattr_accessor :guest_group_name
+  @@guest_group_name = 'guest'
+
+  # Provides configuration options:
   #
   #   RubikAcl.setup do |config|
   #     config.files_with_permissions_path = 'path/to/files'
   #     config.reload_permissions_on_each_request = true
   #     config.groups = %w(admin member)
+  #     config.guest_group_name = 'unknown_visitor'
   #   end
   #
   def self.setup
@@ -44,10 +49,10 @@ module RubikAcl
   def self.permission?(action, resource = nil)
     Thread.current.key?(:rubik_acl_group) or raise(UninitializedGroup)
     if resource.nil?
-      check_permission_for(@@actions_permissions[Thread.current[:rubik_acl_resource_name]][action.to_s])
+      check(@@actions_permissions[Thread.current[:rubik_acl_resource_name]][action.to_s])
     else
       load_action_permissions_for(resource)
-      check_permission_for(@@actions_permissions[resource.to_s][action.to_s])
+      check(@@actions_permissions[resource.to_s][action.to_s])
     end
   end
 
@@ -63,11 +68,11 @@ module RubikAcl
     end
   end
 
-  def self.check_permission_for(allowed)
-    return false unless allowed
-    return false if allowed == DENY_ALL
-    return true if allowed == ALLOW_ALL
-    allowed.include?(Thread.current[:rubik_acl_group])
+  def self.check(permission)
+    return false unless permission
+    return false if permission == DENY_ALL
+    return true if permission == ALLOW_ALL
+    permission.include?(Thread.current[:rubik_acl_group])
   end
 
   def self.init_resource(resource_name)
