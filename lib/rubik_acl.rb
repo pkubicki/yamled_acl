@@ -18,7 +18,7 @@ module RubikAcl
   @@reload_permissions_on_each_request = false
   
   mattr_accessor :groups
-  @@groups = []
+  @@groups = %w()
 
   mattr_accessor :guest_group_name
   @@guest_group_name = 'guest'
@@ -27,13 +27,14 @@ module RubikAcl
   #
   #   RubikAcl.setup do |config|
   #     config.files_with_permissions_path = 'path/to/files'
-  #     config.reload_permissions_on_each_request = true
-  #     config.groups = %w(admin member)
-  #     config.guest_group_name = 'unknown_visitor'
+  #     config.reload_permissions_on_each_request = Rails.env.development?
+  #     config.groups = %w(visitor admin member)
+  #     config.guest_group_name = 'visitor'
   #   end
   #
   def self.setup
     yield(self)
+    @@groups << @@guest_group_name
   end
 
   # Initializes ACL by giving logged user group name and currently processed
