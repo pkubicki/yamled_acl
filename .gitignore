@@ -4,4 +4,6 @@ TODO
 .DS_Store
 Thumbs.db
 Desktop.ini
+pkg/*
 *.gem
+.bundle
