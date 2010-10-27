@@ -1,1 +1,1 @@
-require 'rubik_acl'
+require 'yamled_acl'
