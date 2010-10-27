@@ -1,7 +1,7 @@
-require 'rubik_acl/exceptions'
-require 'rubik_acl/controller_extension'
+require 'yamled_acl/exceptions'
+require 'yamled_acl/controller_extension'
 
-module RubikAcl
+module YamledAcl
 
   ALLOW_ALL = 'allow_all'
   DENY_ALL = 'deny_all'
@@ -25,7 +25,7 @@ module RubikAcl
 
   # Provides configuration options:
   #
-  #   RubikAcl.setup do |config|
+  #   YamledAcl.setup do |config|
   #     config.files_with_permissions_path = 'other/than/default/path'
   #     config.reload_permissions_on_each_request = Rails.env.development?
   #     config.groups = %w(admin member)
@@ -42,15 +42,15 @@ module RubikAcl
   def self.init(group_name, resource_name)
     init_resource(resource_name)
     init_group(group_name)
-    load_action_permissions_for(Thread.current[:rubik_acl_resource_name])
+    load_action_permissions_for(Thread.current[:yamled_acl_resource_name])
   end
 
   # Method used for checking permissions. Optional resource name may be
   # specified to check permission for other resource than curently processed.
   def self.permission?(action, resource = nil)
-    Thread.current.key?(:rubik_acl_group) or raise(UninitializedGroup)
+    Thread.current.key?(:yamled_acl_group) or raise(UninitializedGroup)
     if resource.nil?
-      check(@@actions_permissions[Thread.current[:rubik_acl_resource_name]][action.to_s])
+      check(@@actions_permissions[Thread.current[:yamled_acl_resource_name]][action.to_s])
     else
       load_action_permissions_for(resource)
       check(@@actions_permissions[resource.to_s][action.to_s])
@@ -73,18 +73,18 @@ module RubikAcl
     return false unless permission
     return false if permission == DENY_ALL
     return true if permission == ALLOW_ALL
-    permission.include?(Thread.current[:rubik_acl_group])
+    permission.include?(Thread.current[:yamled_acl_group])
   end
 
   def self.init_resource(resource_name)
     !resource_name.blank? or raise(UninitializedResource)
-    Thread.current[:rubik_acl_resource_name] = resource_name.to_s
+    Thread.current[:yamled_acl_resource_name] = resource_name.to_s
   end
 
   def self.init_group(group_name)
     !group_name.blank? or raise(UninitializedGroup)
     @@groups.include?(group_name.to_s) or raise(NotExistingGroup)
-    Thread.current[:rubik_acl_group] = group_name.to_s
+    Thread.current[:yamled_acl_group] = group_name.to_s
   end
 
 end

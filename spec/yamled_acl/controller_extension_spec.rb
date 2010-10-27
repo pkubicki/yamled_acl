@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'rubik_acl/exceptions'
-require 'rubik_acl/controller_extension'
+require 'yamled_acl/exceptions'
+require 'yamled_acl/controller_extension'
 
-describe RubikAcl::ControllerExtension, "when controller initialized" do
+describe YamledAcl::ControllerExtension, "when controller initialized" do
 
   before(:each) do
     @controller_class = ActionController::Base
@@ -27,8 +27,8 @@ describe RubikAcl::ControllerExtension, "when controller initialized" do
         admin_user = double('current_user')
         admin_user.stub(:group_name).and_return('admin')
         @controller.stub(:current_user).and_return(admin_user)
-        RubikAcl.stub(:init)
-        RubikAcl.stub(:permission?) do |action_name, controller_name|
+        YamledAcl.stub(:init)
+        YamledAcl.stub(:permission?) do |action_name, controller_name|
           case action_name
           when 'admin_allowed_action'
             true
@@ -64,8 +64,8 @@ describe RubikAcl::ControllerExtension, "when controller initialized" do
           end
         end
 
-        it "authorize should raise RubikAcl::AccessDenied" do
-          expect{@controller.send(:authorize)}.to raise_error(RubikAcl::AccessDenied)
+        it "authorize should raise YamledAcl::AccessDenied" do
+          expect{@controller.send(:authorize)}.to raise_error(YamledAcl::AccessDenied)
         end
 
       end
@@ -75,11 +75,11 @@ describe RubikAcl::ControllerExtension, "when controller initialized" do
   context "when there is no logged in user" do
     before(:each) do
       @controller.stub(:logged_in?).and_return(false)
-      RubikAcl.stub(:guest_group_name).and_return('guest')
+      YamledAcl.stub(:guest_group_name).and_return('guest')
     end
 
     it "current_user_group_name should return guest group name" do
-      @controller.send(:current_user_group_name).should == RubikAcl.guest_group_name
+      @controller.send(:current_user_group_name).should == YamledAcl.guest_group_name
     end
 
   end

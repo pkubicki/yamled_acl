@@ -1,4 +1,4 @@
-module RubikAcl
+module YamledAcl
 
   class Error < StandardError
     def initialize(msg)

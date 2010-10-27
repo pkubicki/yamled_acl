@@ -1,4 +1,4 @@
-module RubikAcl
+module YamledAcl
 
   # Module included into controllers.
   # 
@@ -30,7 +30,7 @@ module RubikAcl
     #   <% end %>
     #
     def allowed_to?(action, controller = nil)
-      RubikAcl.permission?(action, controller)
+      YamledAcl.permission?(action, controller)
     end
     
     def self.included(base)
@@ -44,12 +44,12 @@ module RubikAcl
     #   before_filter :authorize
     #
     def authorize
-      RubikAcl.init(current_user_group_name, params[:controller])
-      allowed_to?(params[:action]) or raise(RubikAcl::AccessDenied)
+      YamledAcl.init(current_user_group_name, params[:controller])
+      allowed_to?(params[:action]) or raise(YamledAcl::AccessDenied)
     end
 
     def current_user_group_name
-      logged_in? ? current_user.group_name : RubikAcl.guest_group_name
+      logged_in? ? current_user.group_name : YamledAcl.guest_group_name
     end
 
   end
@@ -57,6 +57,6 @@ end
 
 if defined? ActionController
   ActionController::Base.class_eval do
-    include RubikAcl::ControllerExtension
+    include YamledAcl::ControllerExtension
   end
 end
