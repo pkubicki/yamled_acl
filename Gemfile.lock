@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    yamled_acl (0.1.0)
+    yamled_acl (0.2.0)
 
 GEM
   remote: http://rubygems.org/
