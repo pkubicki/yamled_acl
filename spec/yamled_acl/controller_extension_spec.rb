@@ -6,11 +6,16 @@ describe YamledAcl::ControllerExtension, "when controller initialized" do
 
   before(:each) do
     @controller_class = ActionController::Base
+    @controller_class.current_user_group_method(:group)
     @controller = @controller_class.new
   end
 
   it "should respond to authorize" do
     @controller.should respond_to(:authorize)
+  end
+
+  it "should respond to logged_in?" do
+    @controller.should respond_to(:logged_in?)
   end
 
   it "should respond to current_user_group_name" do
@@ -19,13 +24,13 @@ describe YamledAcl::ControllerExtension, "when controller initialized" do
 
   context "when there is logged in user" do
     before(:each) do
-      @controller.stub(:logged_in?).and_return(true)
+      #@controller.stub(:logged_in?).and_return(true)
     end
 
     context "and user belongs to admin group" do
       before(:each) do
         admin_user = double('current_user')
-        admin_user.stub(:group_name).and_return('admin')
+        admin_user.stub(:group).and_return('admin')
         @controller.stub(:current_user).and_return(admin_user)
         YamledAcl.stub(:init)
         YamledAcl.stub(:permission?) do |action_name, controller_name|
@@ -74,7 +79,8 @@ describe YamledAcl::ControllerExtension, "when controller initialized" do
 
   context "when there is no logged in user" do
     before(:each) do
-      @controller.stub(:logged_in?).and_return(false)
+      #@controller.stub(:logged_in?).and_return(false)
+      @controller.stub(:current_user).and_return(nil)
       YamledAcl.stub(:guest_group_name).and_return('guest')
     end
 
