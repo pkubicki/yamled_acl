@@ -5,7 +5,7 @@ require 'yamled_acl/controller_extension'
 describe YamledAcl::ControllerExtension, "when controller initialized" do
 
   before(:each) do
-    @controller_class = ActionController::Base
+    @controller_class = Class.new(ActionController::Base)
     @controller_class.current_user_group_method(:group)
     @controller = @controller_class.new
   end

@@ -14,13 +14,13 @@ module YamledAcl
       # returns name of user group.
       def current_user_group_method(method_name = nil)
         if method_name
-          @@current_user_group_method = method_name
+          @current_user_group_method = method_name
         else
-          @@current_user_group_method or 'group_name'
+          @current_user_group_method or 'group_name'
         end
       end
       
-    end
+    end #ClassMethods
 
     def self.included(base)
       base.extend ClassMethods
@@ -69,8 +69,8 @@ module YamledAcl
       logged_in? ? current_user.send(self.class.current_user_group_method) : YamledAcl.guest_group_name
     end
 
-  end
-end
+  end #ControllerExtension
+end #YamledAcl
 
 if defined?(ActionController)
   ActionController::Base.class_eval do
