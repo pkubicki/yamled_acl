@@ -1,5 +1,6 @@
 = yamled acl
 
-Simple authorization library for Ruby on Rails in which permissions are defined in YAML files.
+Simple authorization library for Ruby on Rails in which permissions are stored in YAML files.
 
 It is still under development.
+

@@ -1,7 +1,7 @@
 module YamledAcl
 
   # Module included into controllers.
-  # 
+  #
   # A controller should have defined current_user method. This method should
   # respond to "group_name" method which returns name of group that logged in
   # user belongs to.
@@ -19,8 +19,8 @@ module YamledAcl
           @current_user_group_method or 'group_name'
         end
       end
-      
-    end #ClassMethods
+
+    end # ClassMethods
 
     def self.included(base)
       base.extend ClassMethods
@@ -50,7 +50,7 @@ module YamledAcl
     end
 
     # This method should be set to be called by before_filter.
-    # 
+    #
     #   before_filter :authorize
     #
     def authorize
@@ -69,11 +69,12 @@ module YamledAcl
       logged_in? ? current_user.send(self.class.current_user_group_method) : YamledAcl.guest_group_name
     end
 
-  end #ControllerExtension
-end #YamledAcl
+  end # ControllerExtension
+end # YamledAcl
 
 if defined?(ActionController)
   ActionController::Base.class_eval do
     include YamledAcl::ControllerExtension
   end
 end
+
