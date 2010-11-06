@@ -6,22 +6,21 @@ module YamledAcl
   ALLOW_ALL = 'allow_all'
   DENY_ALL = 'deny_all'
 
-  @@lock = Mutex.new
+  @lock = Mutex.new
 
-  mattr_accessor :actions_permissions
-  @@actions_permissions = {}
+  class << self
+    attr_accessor :actions_permissions
+    attr_accessor :files_with_permissions_path
+    attr_accessor :reload_permissions_on_each_request
+    attr_accessor :groups
+    attr_accessor :guest_group_name
+  end
 
-  mattr_accessor :files_with_permissions_path
-  @@files_with_permissions_path = 'config/acl'
-
-  mattr_accessor :reload_permissions_on_each_request
-  @@reload_permissions_on_each_request = false
-
-  mattr_accessor :groups
-  @@groups = []
-
-  mattr_accessor :guest_group_name
-  @@guest_group_name = 'guest'
+  @actions_permissions = {}
+  @files_with_permissions_path = 'config/acl'
+  @reload_permissions_on_each_request = false
+  @groups = []
+  @guest_group_name = 'guest'
 
   # Provides configuration options:
   #
@@ -34,7 +33,7 @@ module YamledAcl
   #
   def self.setup
     yield(self)
-    @@groups << @@guest_group_name
+    @groups << @guest_group_name
   end
 
   # Initializes ACL by giving logged user group name and currently processed
@@ -50,20 +49,20 @@ module YamledAcl
   def self.permission?(action, resource = nil)
     Thread.current.key?(:yamled_acl_group) or raise(UninitializedGroup)
     if resource.nil?
-      check(@@actions_permissions[Thread.current[:yamled_acl_resource_name]][action.to_s])
+      check(@actions_permissions[Thread.current[:yamled_acl_resource_name]][action.to_s])
     else
       load_action_permissions_for(resource)
-      check(@@actions_permissions[resource.to_s][action.to_s])
+      check(@actions_permissions[resource.to_s][action.to_s])
     end
   end
 
   private
 
   def self.load_action_permissions_for(resource)
-    @@lock.synchronize do
-      if @@actions_permissions[resource.to_s].nil? || reload_permissions_on_each_request
+    @lock.synchronize do
+      if @actions_permissions[resource.to_s].nil? || reload_permissions_on_each_request
         File.open("#{files_with_permissions_path}/#{resource.to_s}.yml", File::RDONLY) do |file|
-          @@actions_permissions[resource.to_s] = YAML::load(file)
+          @actions_permissions[resource.to_s] = YAML::load(file)
         end
       end
     end
@@ -77,13 +76,13 @@ module YamledAcl
   end
 
   def self.init_resource(resource_name)
-    !resource_name.blank? or raise(UninitializedResource)
+    resource_name or raise(UninitializedResource)
     Thread.current[:yamled_acl_resource_name] = resource_name.to_s
   end
 
   def self.init_group(group_name)
-    !group_name.blank? or raise(UninitializedGroup)
-    @@groups.include?(group_name.to_s) or raise(NotExistingGroup)
+    group_name or raise(UninitializedGroup)
+    @groups.include?(group_name.to_s) or raise(NotExistingGroup)
     Thread.current[:yamled_acl_group] = group_name.to_s
   end
 

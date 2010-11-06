@@ -50,7 +50,6 @@ PLATFORMS
 
 DEPENDENCIES
   actionpack (~> 3.0)
-  activesupport (~> 3.0)
   rcov (~> 0.9)
   rspec (~> 2.0)
   yamled_acl!
