@@ -1,6 +1,3 @@
-require 'bundler'
-Bundler::GemHelper.install_tasks
-
 require 'rake'
 require 'rake/rdoctask'
 
@@ -19,6 +16,8 @@ RSpec::Core::RakeTask.new(:spec)
 desc "Run specs with RCov"
 RSpec::Core::RakeTask.new(:rcov) do |t|
   t.rcov = true
+  t.rcov_opts = %q[--exclude "spec" --text-report]
 end
 
 task :default => :spec
+

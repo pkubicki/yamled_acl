@@ -1,138 +1,178 @@
 require 'spec_helper'
 require 'yamled_acl'
 
-describe YamledAcl, "when not configured" do
-  it "should raise UninitializedGroup when checking permission without given resource name" do
-    expect{YamledAcl.permission?(:foo)}.to raise_error(YamledAcl::UninitializedGroup)
-  end
+describe YamledAcl do
 
-  it "should raise UninitializedGroup when checking permission with given resource name" do
-    expect{YamledAcl.permission?(:foo, :bar)}.to raise_error(YamledAcl::UninitializedGroup)
-  end
+  context "when setup not invoked before" do
 
-end
+    describe ".permission?" do
 
-describe YamledAcl, "when properly configured" do
-  before(:each) do
-    YamledAcl.setup do |config|
-      config.files_with_permissions_path = File.expand_path('../example_files', __FILE__)
-      config.reload_permissions_on_each_request = true
-      config.groups = %w(admin member guest)
-    end
-  end
+      context "when resource name not given" do
 
-  context "when not existing user group given" do
-    it "should raise NotExistingGroup while initialization" do
-      expect{YamledAcl.init(:not_existion_group, :example_permissions)}.to raise_error(YamledAcl::NotExistingGroup)
-    end
-  end
+        it "raises UninitializedGroup" do
+          expect{YamledAcl.permission?(:foo)}.to raise_error(YamledAcl::UninitializedGroup)
+        end
 
-  context "when blank resource name given" do
-    it "should raise UninitializedResource while initialization" do
-      expect{YamledAcl.init(:not_existion_group, nil)}.to raise_error(YamledAcl::UninitializedResource)
-    end
-  end
+      end # when resource name not given
 
-  context "when guest executes action" do
-    before(:each) do
-      YamledAcl.init(:guest, :example_permissions)
-    end
+      context "when resource name given" do
 
-    context "when resource name parameter specified" do
-      it "should allow for access to anyone_allowed_action" do
-        YamledAcl.permission?(:anyone_allowed_action_2, :example_permissions_2).should be_true
+        it "raises UninitializedGroup" do
+          expect{YamledAcl.permission?(:foo, :bar)}.to raise_error(YamledAcl::UninitializedGroup)
+        end
+
+      end # when resource name given
+
+    end # .permission
+
+  end # when setup not invoked before
+
+  context "when setup invoked before" do
+    before(:all) do
+      YamledAcl.setup do |config|
+        config.files_with_permissions_path = File.expand_path('../example_files', __FILE__)
+        config.reload_permissions_on_each_request = true
+        config.groups = %w(admin member guest)
       end
     end
 
-    context "when resource name parameter not specified" do
-      it "should allow for access to anyone_allowed_action" do
-        YamledAcl.permission?(:anyone_allowed_action).should be_true
-      end
+    describe ".init" do
 
-      it "should deny for access to admin_allowed_action" do
-        YamledAcl.permission?(:admin_allowed_action).should be_false
-      end
+      context "when not existing user group given" do
 
-      it "should deny for access to member_allowed_action" do
-        YamledAcl.permission?(:member_allowed_action).should be_false
-      end
+        it "raises NotExistingGroup" do
+          expect{YamledAcl.init(:not_existion_group, :example_permissions)}.to raise_error(YamledAcl::NotExistingGroup)
+        end
 
-      it "should deny for access to admin_and_member_allowed_action" do
-        YamledAcl.permission?(:admin_and_member_allowed_action).should be_false
-      end
+      end # when not existing user group given
 
-      it "should deny for access to not_existing_action" do
-        YamledAcl.permission?(:not_existing_action).should be_false
-      end
+      context "when given resource name is a nil" do
 
-      it "should deny for access to no_one_allowed_action" do
-        YamledAcl.permission?(:no_one_allowed_action).should be_false
-      end
+        it "raises UninitializedResource" do
+          expect{YamledAcl.init(:not_existion_group, nil)}.to raise_error(YamledAcl::UninitializedResource)
+        end
 
-      it "should deny for access to not_existing_action" do
-        YamledAcl.permission?(:not_existing_action).should be_false
-      end
-    end
-  end
+      end # when given resource name is a nil
 
-  context "when admin executes action" do
-    before(:each) do
-      YamledAcl.init(:admin, :example_permissions)
-    end
+    end # .init
 
-    it "should allow for access to anyone_allowed_action" do
-      YamledAcl.permission?(:anyone_allowed_action).should be_true
-    end
+    describe ".permission?" do
 
-    it "should allow for access to admin_allowed_action" do
-      YamledAcl.permission?(:admin_allowed_action).should be_true
-    end
+      context "when given group is a guest" do
 
-    it "should deny for access to member_allowed_action" do
-      YamledAcl.permission?(:member_allowed_action).should be_false
-    end
+        before do
+          YamledAcl.init(:guest, :example_permissions)
+        end
 
-    it "should allow for access to admin_and_member_allowed_action" do
-      YamledAcl.permission?(:admin_and_member_allowed_action).should be_true
-    end
+        context "when using resource name specified by a second parameter" do
 
-    it "should deny for access to no_one_allowed_action" do
-      YamledAcl.permission?(:no_one_allowed_action).should be_false
-    end
+          it "allows for access to anyone_allowed_action" do
+            YamledAcl.permission?(:anyone_allowed_action_2, :example_permissions_2).should be_true
+          end
 
-    it "should deny for access to not_existing_action" do
-      YamledAcl.permission?(:not_existing_action).should be_false
-    end
-  end
+        end # when using resource name specified by a second parameter
 
-  context "when member executes action" do
-    before(:each) do
-      YamledAcl.init(:member, :example_permissions)
-    end
+        context "when using resource name specified with .init method" do
 
-    it "should allow for access to anyone_allowed_action" do
-      YamledAcl.permission?(:anyone_allowed_action).should be_true
-    end
+          it "allows for access to anyone_allowed_action" do
+            YamledAcl.permission?(:anyone_allowed_action).should be_true
+          end
 
-    it "should deny for access to admin_allowed_action" do
-      YamledAcl.permission?(:admin_allowed_action).should be_false
-    end
+          it "denies for access to admin_allowed_action" do
+            YamledAcl.permission?(:admin_allowed_action).should be_false
+          end
 
-    it "should allow for access to member_allowed_action" do
-      YamledAcl.permission?(:member_allowed_action).should be_true
-    end
+          it "denies for access to member_allowed_action" do
+            YamledAcl.permission?(:member_allowed_action).should be_false
+          end
 
-    it "should allow for access to admin_and_member_allowed_action" do
-      YamledAcl.permission?(:admin_and_member_allowed_action).should be_true
-    end
+          it "denies for access to admin_and_member_allowed_action" do
+            YamledAcl.permission?(:admin_and_member_allowed_action).should be_false
+          end
 
-    it "should deny for access to no_one_allowed_action" do
-      YamledAcl.permission?(:no_one_allowed_action).should be_false
-    end
-    
-    it "should deny for access to not_existing_action" do
-      YamledAcl.permission?(:not_existing_action).should be_false
-    end
-  end
+          it "denies for access to not_existing_action" do
+            YamledAcl.permission?(:not_existing_action).should be_false
+          end
 
-end
+          it "denies for access to no_one_allowed_action" do
+            YamledAcl.permission?(:no_one_allowed_action).should be_false
+          end
+
+          it "denies for access to not_existing_action" do
+            YamledAcl.permission?(:not_existing_action).should be_false
+          end
+
+        end # without resource name parameter given
+
+      end # when given group is a guest
+
+      context "when given group is an admin" do
+
+        before do
+          YamledAcl.init(:admin, :example_permissions)
+        end
+
+        it "allows for access to anyone_allowed_action" do
+          YamledAcl.permission?(:anyone_allowed_action).should be_true
+        end
+
+        it "allows for access to admin_allowed_action" do
+          YamledAcl.permission?(:admin_allowed_action).should be_true
+        end
+
+        it "denies for access to member_allowed_action" do
+          YamledAcl.permission?(:member_allowed_action).should be_false
+        end
+
+        it "allows for access to admin_and_member_allowed_action" do
+          YamledAcl.permission?(:admin_and_member_allowed_action).should be_true
+        end
+
+        it "denies for access to no_one_allowed_action" do
+          YamledAcl.permission?(:no_one_allowed_action).should be_false
+        end
+
+        it "denies for access to not_existing_action" do
+          YamledAcl.permission?(:not_existing_action).should be_false
+        end
+
+      end # when given group is an admin
+
+      context "when given group is a member" do
+
+        before do
+          YamledAcl.init(:member, :example_permissions)
+        end
+
+        it "allows for access to anyone_allowed_action" do
+          YamledAcl.permission?(:anyone_allowed_action).should be_true
+        end
+
+        it "denies for access to admin_allowed_action" do
+          YamledAcl.permission?(:admin_allowed_action).should be_false
+        end
+
+        it "allows for access to member_allowed_action" do
+          YamledAcl.permission?(:member_allowed_action).should be_true
+        end
+
+        it "allows for access to admin_and_member_allowed_action" do
+          YamledAcl.permission?(:admin_and_member_allowed_action).should be_true
+        end
+
+        it "denies for access to no_one_allowed_action" do
+          YamledAcl.permission?(:no_one_allowed_action).should be_false
+        end
+
+        it "denies for access to not_existing_action" do
+          YamledAcl.permission?(:not_existing_action).should be_false
+        end
+
+      end # when given group is a member
+
+    end # .permission?
+
+  end # when setup invoked before
+
+end # YamledAcl
+

@@ -16,7 +16,7 @@ module YamledAcl
 
   mattr_accessor :reload_permissions_on_each_request
   @@reload_permissions_on_each_request = false
-  
+
   mattr_accessor :groups
   @@groups = []
 
@@ -88,3 +88,4 @@ module YamledAcl
   end
 
 end
+
