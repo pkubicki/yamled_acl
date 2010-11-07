@@ -4,7 +4,8 @@ module YamledAcl
   #
   # A controller should have defined current_user method. This method should
   # respond to "group_name" method which returns name of group that logged in
-  # user belongs to.
+  # user belongs to. Optionally name of this method could be changed using
+  # current_user_group_method.
   #
   module ControllerExtension
 
@@ -29,9 +30,9 @@ module YamledAcl
 
     protected
 
-    # Checks current user permission for specified action. Optionally if
-    # checked action belongs to different controller than currently processed
-    # it name should be specified as a second parameter.
+    # Checks current user permission for specified action. It takes two
+    # arguments action_name and controller_name but if the second one is not
+    # given currelntly processed controller name will be used.
     #
     # In controllers:
     #
@@ -49,7 +50,7 @@ module YamledAcl
       YamledAcl.permission?(action, controller)
     end
 
-    # This method should be set to be called by before_filter.
+    # This method should be be called by before_filter.
     #
     #   before_filter :authorize
     #
@@ -64,7 +65,7 @@ module YamledAcl
       !!current_user
     end
 
-    # Returns current user group name.
+    # Returns current user group name. Used by authorize.
     def current_user_group_name
       logged_in? ? current_user.send(self.class.current_user_group_method) : YamledAcl.guest_group_name
     end

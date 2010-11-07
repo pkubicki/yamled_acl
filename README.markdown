@@ -2,8 +2,6 @@
 
 Simple authorization library for Ruby on Rails in which permissions are stored in YAML files. Provides porotection before unauthorized access to controller actions. Very simple to configure and use.
 
-------------------
-
 ## Installation ##
 
 Using gemfile
@@ -78,8 +76,6 @@ Following methods may be used in controllers and views:
     <% end %>
 
 * *logged_in?* - returns true if there is a logged in user
-
----------------
 
 ## Copyright ##
 
