@@ -20,10 +20,10 @@ or as a plugin
 
 YamledAcl provides following configuration options, you could set them through setup method:
 
-* *files_with_permissions_path* - path to files with permissions, (default: "config/acl")
-* *reload_permissions_on_each_request* - as name says, for Rails you may want to set Rails.env.development? (default: false)
-* *groups* - allows to specify groups names, it's empty by default
-* *guest_group_name* - allows to override default guest group name (default: "guest"), guest group name is added to groups table automatically
+* **files_with_permissions_path** - path to files with permissions, (default: "config/acl")
+* **reload_permissions_on_each_request** - as name says, for Rails you may want to set Rails.env.development? (default: false)
+* **groups** - allows to specify groups names, it's empty by default
+* **guest_group_name** - allows to override default guest group name (default: "guest"), guest group name is added to groups table automatically
 
 For Rails application the best place to store configuration is an initializer.
 An example:
@@ -69,13 +69,13 @@ An example:
 
 Following methods may be used in controllers and views:
 
-* *allowed_to?(action_name, controller_name)* - it takes two arguments action_name and controller_name but if the second one is not given currelntly processed controller name will be used
+* **allowed_to?(action_name, controller_name)** - it takes two arguments action_name and controller_name but if the second one is not given currelntly processed controller name will be used
 
     <% if allowed_to?(:update) %>
       <%= link_to "Edit", edit_post_path(@post) %>
     <% end %>
 
-* *logged_in?* - returns true if there is a logged in user
+* **logged_in?** - returns true if there is a logged in user
 
 ## Copyright ##
 
