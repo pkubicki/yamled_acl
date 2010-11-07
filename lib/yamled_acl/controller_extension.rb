@@ -24,7 +24,7 @@ module YamledAcl
 
     def self.included(base)
       base.extend ClassMethods
-      base.helper_method :allowed_to?
+      base.helper_method :allowed_to?, :logged_in?
     end
 
     protected

@@ -9,7 +9,6 @@ module YamledAcl
   @lock = Mutex.new
 
   class << self
-    attr_accessor :actions_permissions
     attr_accessor :files_with_permissions_path
     attr_accessor :reload_permissions_on_each_request
     attr_accessor :groups
