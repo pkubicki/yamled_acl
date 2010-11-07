@@ -71,9 +71,9 @@ Following methods may be used in controllers and views:
 
 * **allowed_to?(action_name, controller_name)** - it takes two arguments action_name and controller_name but if the second one is not given currelntly processed controller name will be used
 
-    <% if allowed_to?(:update) %>
-      <%= link_to "Edit", edit_post_path(@post) %>
-    <% end %>
+        <% if allowed_to?(:update) %>
+          <%= link_to "Edit", edit_post_path(@post) %>
+        <% end %>
 
 * **logged_in?** - returns true if there is a logged in user
 
