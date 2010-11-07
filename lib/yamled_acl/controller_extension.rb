@@ -2,16 +2,15 @@ module YamledAcl
 
   # Module included into controllers.
   #
-  # A controller should have defined current_user method. This method should
-  # respond to "group_name" method which returns name of group that logged in
+  # A controller should have defined +current_user+ method. This method should
+  # respond to +group_name+ method which returns name of group that logged in
   # user belongs to. Optionally name of this method could be changed using
-  # current_user_group_method.
-  #
+  # +current_user_group_method+.
   module ControllerExtension
 
     module ClassMethods
 
-      # Allow to override default name of current_user object method which
+      # Allow to override default name of +current_user+ object method which
       # returns name of user group.
       def current_user_group_method(method_name = nil)
         if method_name
@@ -23,7 +22,7 @@ module YamledAcl
 
     end # ClassMethods
 
-    def self.included(base)
+    def self.included(base) # :nodoc:
       base.extend ClassMethods
       base.helper_method :allowed_to?, :logged_in?
     end
@@ -50,7 +49,7 @@ module YamledAcl
       YamledAcl.permission?(action, controller)
     end
 
-    # This method should be be called by before_filter.
+    # This method should be be called by +before_filter+.
     #
     #   before_filter :authorize
     #
@@ -60,12 +59,12 @@ module YamledAcl
     end
 
     # Returns true if there is a logged in user.
-    # It assumes that controller have curent_user method defined.
+    # It assumes that controller have +curent_user+ method defined.
     def logged_in?
       !!current_user
     end
 
-    # Returns current user group name. Used by authorize.
+    # Returns current user group name. Used by +authorize+.
     def current_user_group_name
       logged_in? ? current_user.send(self.class.current_user_group_method) : YamledAcl.guest_group_name
     end
