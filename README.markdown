@@ -39,7 +39,7 @@ An example:
 
 In the ApplicationController you should add
 
-    before_filter :authorize
+    before_filter :authorize_action
 
 It assumes that there is already defined *current_user* method which returns logged user object. User object should respond to *group_name* method which should return name of current user group. If you want to override method name returning group name it could be done by current_user_group_method of the controller. Here is an example:
 
@@ -47,7 +47,7 @@ It assumes that there is already defined *current_user* method which returns log
 
     class ApplicationController < ActionController::Base
       current_user_group_method: group
-      before_filter :authorize
+      before_filter :authorize_action
     end
 
 ## Setting up permissions ##
@@ -76,6 +76,17 @@ Following methods may be used in controllers and views:
         <% end %>
 
 * **logged_in?** - returns true if there is a logged in user
+
+## ChangeLog ##
+
+0.3.0 (March 24, 2013)
+
+* ruby 2.0 compatibility
+* authorize method name relpaced with less conflicting authorize_action
+
+0.2.0 (November 9, 2010)
+
+* first official release
 
 ## Copyright ##
 
