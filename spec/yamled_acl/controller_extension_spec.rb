@@ -12,8 +12,8 @@ describe YamledAcl::ControllerExtension do
       @controller = @controller_class.new
     end
 
-    it "responds to #authorize" do
-      @controller.respond_to?(:authorize, true).should be_true 
+    it "responds to #authorize_action" do
+      @controller.respond_to?(:authorize_action, true).should be_true 
     end
 
     it "responds to #logged_in?" do
@@ -54,17 +54,17 @@ describe YamledAcl::ControllerExtension do
           @controller.stub(:params).and_return({:action => "admin_allowed_action"})
         end
 
-        describe "#authorize" do
+        describe "#authorize_action" do
 
           it "doesn't raise any error" do
-            expect{@controller.send(:authorize)}.to_not raise_error
+            expect{@controller.send(:authorize_action)}.to_not raise_error
           end
 
           it "returns true" do
-            @controller.send(:authorize).should == true
+            @controller.send(:authorize_action).should == true
           end
 
-        end # #authorize
+        end # #authorize_action
 
       end # when trying to perform action with granted access
 
@@ -79,13 +79,13 @@ describe YamledAcl::ControllerExtension do
           end
         end
 
-        describe "#authorize" do
+        describe "#authorize_action" do
 
           it "raises YamledAcl::AccessDenied" do
-            expect{@controller.send(:authorize)}.to raise_error(YamledAcl::AccessDenied)
+            expect{@controller.send(:authorize_action)}.to raise_error(YamledAcl::AccessDenied)
           end
 
-        end # #authorize
+        end # #authorize_action
 
       end # when trying to perform action without granted access
 

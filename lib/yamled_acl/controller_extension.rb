@@ -51,9 +51,9 @@ module YamledAcl
 
     # This method should be be called by +before_filter+.
     #
-    #   before_filter :authorize
+    #   before_filter :authorize_action
     #
-    def authorize
+    def authorize_action
       YamledAcl.init(current_user_group_name, params[:controller])
       allowed_to?(params[:action]) or raise(YamledAcl::AccessDenied)
     end
@@ -64,7 +64,7 @@ module YamledAcl
       !!current_user
     end
 
-    # Returns current user group name. Used by +authorize+.
+    # Returns current user group name. Used by +authorize_action+.
     def current_user_group_name
       logged_in? ? current_user.send(self.class.current_user_group_method) : YamledAcl.guest_group_name
     end
