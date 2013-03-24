@@ -14,3 +14,16 @@ RSpec::Core::RakeTask.new(:spec)
 
 task :default => :spec
 
+desc "Build current version as a rubygem"
+task :build do
+  `gem build yamled_acl.gemspec`
+  `mv yamled_acl-*.gem pkg/`
+end
+
+desc "Relase current version to rubygems.org"
+task :release => :build do
+  `git tag -am "Version bump to #{YamledAcl::VERSION}" v#{YamledAcl::VERSION}`
+  `git push origin master`
+  `git push origin master --tags`
+  `gem push pkg/yamled_acl-#{YamledAcl::VERSION}.gem`
+end

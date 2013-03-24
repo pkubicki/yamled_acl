@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/pkubicki/yamled_acl"
   s.summary     = "Simple authorization library for Ruby on Rails."
   s.description = "Simple authorization library for Ruby on Rails in which permissions are stored in YAML files."
+  s.licenses    = ["MIT"]
 
   s.add_development_dependency "rspec", "~> 2.13"
   s.add_development_dependency "actionpack", "~> 3.0"
