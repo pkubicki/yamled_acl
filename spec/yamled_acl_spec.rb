@@ -30,7 +30,7 @@ describe YamledAcl do
   context "when setup invoked before" do
     before(:all) do
       YamledAcl.setup do |config|
-        config.files_with_permissions_path = File.expand_path('../example_files', __FILE__)
+        config.files_with_permissions_path = File.expand_path('../fixtures', __FILE__)
         config.reload_permissions_on_each_request = true
         config.groups = %w(admin member guest)
       end

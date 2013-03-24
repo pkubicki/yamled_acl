@@ -13,15 +13,15 @@ describe YamledAcl::ControllerExtension do
     end
 
     it "responds to #authorize" do
-      @controller.should respond_to(:authorize)
+      @controller.respond_to?(:authorize, true).should be_true 
     end
 
     it "responds to #logged_in?" do
-      @controller.should respond_to(:logged_in?)
+      @controller.respond_to?(:logged_in?, true).should be_true
     end
 
     it "responds to #current_user_group_name" do
-      @controller.should respond_to(:current_user_group_name)
+      @controller.respond_to?(:current_user_group_name, true).should be_true
     end
 
     context "given logged in user with admin group" do

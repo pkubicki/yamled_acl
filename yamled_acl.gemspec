@@ -12,9 +12,8 @@ Gem::Specification.new do |s|
   s.summary     = "Simple authorization library for Ruby on Rails."
   s.description = "Simple authorization library for Ruby on Rails in which permissions are stored in YAML files."
 
-  s.add_development_dependency "rspec", "~> 2.0"
+  s.add_development_dependency "rspec", "~> 2.13"
   s.add_development_dependency "actionpack", "~> 3.0"
-  s.add_development_dependency "rcov", "~> 0.9"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- spec/*`.split("\n")

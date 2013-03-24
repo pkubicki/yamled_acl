@@ -1,5 +1,12 @@
-nbproject
+.*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+*.rbc
+/coverage/
 coverage
+nbproject
 rdoc
 TODO
 .DS_Store
@@ -8,3 +15,4 @@ Desktop.ini
 pkg/*
 *.gem
 .bundle
+.rvmrc

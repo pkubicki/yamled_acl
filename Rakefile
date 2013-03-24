@@ -1,5 +1,5 @@
 require 'rake'
-require 'rake/rdoctask'
+require 'rdoc/task'
 
 desc 'Generate documentation for the yamled_acl plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
@@ -11,12 +11,6 @@ end
 
 require "rspec/core/rake_task"
 RSpec::Core::RakeTask.new(:spec)
-
-desc "Run specs with RCov"
-RSpec::Core::RakeTask.new(:rcov) do |t|
-  t.rcov = true
-  t.rcov_opts = %q[--exclude "spec" --text-report]
-end
 
 task :default => :spec
 
